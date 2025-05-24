@@ -77,6 +77,8 @@ class IcpUaePdfSpider(scrapy.Spider):
         pdf_path = response.meta.get('pdf_path')
         text, images = extract_text_and_images(pdf_path)
         # item = PdfExtractedItem()
+        with open(pdf_path, 'rb') as f:
+            pdf_binary_data = f.read()
         item = {}
         item['file_name'] = os.path.basename(pdf_path)
         item['text'] = text
@@ -146,6 +148,6 @@ class IcpUaePdfSpider(scrapy.Spider):
             'images': str(images) if images else '',
             'file_name': str(os.path.basename(pdf_path)) if os.path.basename(pdf_path) else '',
             'emirates_id': str(os.path.basename(pdf_path)).replace('.pdf', '').strip(),
-            'pdf_text': text
+            'pdf_text': str(pdf_binary_data)
         }
         yield Product(**data)
